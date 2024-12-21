@@ -4,7 +4,7 @@ import { useCookies } from '@/composables/useCookies'
 import { useRefreshToken } from '@/composables/useRefreshToken'
 
 const { getCookie } = useCookies()
-const { keepTokenUpdated, dateInXseconds } = useRefreshToken()
+const { keepTokenUpdated } = useRefreshToken()
 
 const checkAuth = () => {
     if (!getCookie('accessToken')) return
@@ -12,6 +12,7 @@ const checkAuth = () => {
     keepTokenUpdated()
 }
 
+console.log('App Start')
 checkAuth()
 </script>
 

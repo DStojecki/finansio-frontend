@@ -1,53 +1,45 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import axios from '@/lib/axios'
+import router from '@/lib/router'
+import DynamicForm from '@/components/DynamicForm.vue'
 import { useCookies } from '@/composables/useCookies'
 import { useRefreshToken } from '@/composables/useRefreshToken'
-import router from '@/router'
-import { reactive } from 'vue'
-import { Form, Field } from 'vee-validate'
+import { signUpFormSchema } from '@/lib/schemas/signUp'
+import { useAuthStore } from '@/lib/stores/auth'
 
 interface SignInBody {
     email: string
     password: string
 }
 
+const store = useAuthStore()
 const { setCookie } = useCookies()
 const { keepTokenUpdated, dateInXseconds } = useRefreshToken()
 
-const form: SignInBody = reactive({
-    email: '',
-    password: '',
-})
+const signIn = async (values: SignInBody, actions) => {
+    axios
+        .post('/authentication/sign-in', values)
+        .then(function (response) {
+            const authExpiration = dateInXseconds(response.data.accessToken.ttl)
+            store.$state.user = response.data.user
 
-const signIn = async () => {
-    const url = 'http://localhost:3000/authentication/sign-in'
+            setCookie('authExpiration', authExpiration, response.data.accessToken.ttl)
+            setCookie('accessToken', response.data.accessToken.token, response.data.accessToken.ttl)
+            setCookie(
+                'refreshToken',
+                response.data.refreshToken.token,
+                response.data.refreshToken.ttl,
+            )
+            window.localStorage.setItem('userId', store.user.id)
 
-    try {
-        const request = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(form),
+            keepTokenUpdated()
+            router.push('dashboard')
         })
-        const response = await request.json()
-        const authExpiration = dateInXseconds(response.accessToken.ttl)
+        .catch(function (error) {
+            const errorMessage = error.response.data
 
-        setCookie('authExpiration', authExpiration, response.accessToken.ttl)
-        setCookie('accessToken', response.accessToken.token, response.accessToken.ttl)
-        setCookie('refreshToken', response.refreshToken.token, response.refreshToken.ttl)
-
-        keepTokenUpdated()
-        router.replace('dashboard')
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-const onSubmit = (values) => {
-    console.log(values)
+            actions.setFieldError(errorMessage.field, errorMessage.message)
+        })
 }
 </script>
 
@@ -61,28 +53,7 @@ const onSubmit = (values) => {
                         Enter your email below to login to your account
                     </p>
                 </div>
-                <Form @submit="onSubmit" class="grid gap-4">
-                    <div class="grid gap-2">
-                        <Label for="email">Email</Label>
-                        <Field name="email" type="email" v-model="form.email">
-                            <Input id="email" type="email" required placeholder="m@example.com" />
-                        </Field>
-                    </div>
-                    <div class="grid gap-2">
-                        <div class="flex items-center">
-                            <Label for="password">Password</Label>
-                            <a
-                                href="/forgot-password"
-                                class="ml-auto inline-block text-sm underline"
-                            >
-                                Forgot your password?
-                            </a>
-                        </div>
-                        <Input v-model="form.password" id="password" type="password" required />
-                    </div>
-                    <Button type="submit" class="w-full"> Login </Button>
-                    <Button variant="outline" class="w-full"> Login with Google </Button>
-                </Form>
+                <DynamicForm :schema="signUpFormSchema" :onSubmit="signIn" :btnText="'Login'" />
                 <div class="mt-4 text-center text-sm">
                     Don't have an account?
                     <a href="#" class="underline"> Sign up </a>

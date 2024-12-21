@@ -1,4 +1,5 @@
 import { useCookies } from './useCookies'
+import axios from '@/lib/axios/index'
 
 const MILISECONDS_BEFORE_TOKEN_EXPIRES = 55000
 
@@ -6,30 +7,32 @@ export const useRefreshToken = () => {
     const { getCookie, setCookie } = useCookies()
 
     const updateAccessToken = async () => {
-        const url = 'http://localhost:3000/authentication/refresh-tokens'
-
-        try {
-            const body = {
-                refreshToken: getCookie('refreshToken'),
-            }
-            const request = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            })
-            const response = await request.json()
-            const authExpiration = dateInXseconds(response.accessToken.ttl)
-
-            setCookie('authExpiration', authExpiration, response.accessToken.ttl)
-            setCookie('accessToken', response.accessToken.token, response.accessToken.ttl)
-            setCookie('refreshToken', response.refreshToken.token, response.refreshToken.ttl)
-
-            keepTokenUpdated()
-        } catch (error) {
-            console.log(error)
+        const body = {
+            refreshToken: getCookie('refreshToken'),
         }
+
+        axios
+            .post('authentication/refresh-tokens', body)
+            .then(function (response) {
+                const authExpiration = dateInXseconds(response.data.accessToken.ttl)
+
+                setCookie('authExpiration', authExpiration, response.data.accessToken.ttl)
+                setCookie(
+                    'accessToken',
+                    response.data.accessToken.token,
+                    response.data.accessToken.ttl,
+                )
+                setCookie(
+                    'refreshToken',
+                    response.data.refreshToken.token,
+                    response.data.refreshToken.ttl,
+                )
+
+                keepTokenUpdated()
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
     }
 
     const getMillisecondsUntil = (isoString: string | null): number | null => {

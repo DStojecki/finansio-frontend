@@ -4,11 +4,13 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
-import router from './router'
+import router from './lib/router'
 
-import { authGuard } from './router/authGuard'
+import { authGuard } from './lib/router/authGuard'
 
 const app = createApp(App)
+
+// TODO add to env
 
 app.use(createPinia())
 app.use(router)

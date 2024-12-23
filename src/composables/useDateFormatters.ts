@@ -34,10 +34,13 @@ export function useDateFormatters() {
                     ? `${monthNames.value[monthIndex]} ${monthYear}`
                     : monthNames.value[monthIndex]
 
+                const lastDayOfMonth = new Date(monthYear, monthIndex + 1, 0)
+
                 months.unshift({
                     name: monthLabel,
-                    total: Math.floor(Math.random() * 2000) + 500,
-                    predicted: Math.floor(Math.random() * 2000) + 500,
+                    total: 0,
+                    predicted: 0,
+                    timestamp: lastDayOfMonth,
                 })
             }
             return months
@@ -45,11 +48,16 @@ export function useDateFormatters() {
 
         const yearsCount = Math.ceil(x / 12)
         const years = []
+
         for (let i = 0; i < yearsCount; i++) {
+            const year = currentYear - i
+            const lastDayOfYear = new Date(year, 11, 31)
+
             years.unshift({
-                name: (currentYear - i).toString(),
-                total: Math.floor(Math.random() * 2000) + 500,
-                predicted: Math.floor(Math.random() * 2000) + 500,
+                name: year.toString(),
+                total: 0,
+                predicted: 0,
+                timestamp: lastDayOfYear,
             })
         }
 

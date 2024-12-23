@@ -20,6 +20,18 @@ onMounted(() => {
 })
 const formatChartData = () => {
     data.value = getPastTimeArray(Number(store.timeRange))
+
+    const mappedSavings = store.savings.map((saving) => {
+        return {
+            name: saving.name,
+            history: new Array(Number(store.timeRange)),
+        }
+    })
+    console.log('halo', mappedSavings)
+
+    // data.value.forEach(period => {
+
+    // })
 }
 let data = ref([])
 </script>

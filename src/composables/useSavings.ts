@@ -14,6 +14,7 @@ export const useSavings = (): {
         const payload = {
             name: values.name,
             currency: values.currency,
+            amount: values.amount,
             history: [
                 {
                     amount: values.amount,

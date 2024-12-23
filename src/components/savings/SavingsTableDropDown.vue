@@ -47,7 +47,6 @@ const editSaving = async (values, actions) => {
     await axios
         .patch(`savings/${props.saving.id}`, values)
         .then(async (response) => {
-            console.log(response.data)
             store.savings = response.data
         })
         .finally(() => {
@@ -59,7 +58,6 @@ const addSavingHistoryRq = async (values, actions) => {
     await axios
         .post(`savings/${props.saving.id}/history`, values)
         .then(async (response) => {
-            console.log(response.data)
             store.savings = response.data
         })
         .finally(() => {
@@ -92,7 +90,10 @@ const openModal = (type: string) => {
             <DropdownMenuSeparator />
             <DropdownMenuItem @click="deleteSaving(saving.id)">Delete</DropdownMenuItem>
             <DropdownMenuItem @click="openModal('edit')">Edit</DropdownMenuItem>
-            <DropdownMenuItem @click="openModal('history')">Add History</DropdownMenuItem>
+            <DropdownMenuItem @click="openModal('addHistory')">Add History</DropdownMenuItem>
+            <DropdownMenuItem @click="openModal('previewHistory')"
+                >Preview History</DropdownMenuItem
+            >
         </DropdownMenuContent>
     </DropdownMenu>
     <Dialog v-model:open="isOpen">
@@ -116,7 +117,7 @@ const openModal = (type: string) => {
                         />
                     </DialogDescription>
                 </template>
-                <template v-if="modalType === 'history'">
+                <template v-if="modalType === 'addHistory'">
                     <DialogTitle class="mb-5">Add History Record</DialogTitle>
                     <DialogDescription>
                         <p class="font-medium mb-4">
@@ -125,10 +126,32 @@ const openModal = (type: string) => {
                         </p>
                         <DynamicForm
                             :schema="addSavingHistory"
-                            :initialValues="initialValues"
                             :onSubmit="(values, actions) => addSavingHistoryRq(values, actions)"
                             :btnText="'Save changes'"
                         />
+                    </DialogDescription>
+                </template>
+                <template v-if="modalType === 'previewHistory'">
+                    <DialogTitle class="mb-5">Preview Saving History</DialogTitle>
+                    <DialogDescription>
+                        <p class="font-medium mb-4">
+                            You can preview history of saving updates here.
+                        </p>
+
+                        <ol class="relative border-s border-gray-200 dark:border-gray-700">
+                            <li v-for="historyRecord in saving.history" class="mb-10 ms-4">
+                                <div
+                                    class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -start-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"
+                                ></div>
+                                <time
+                                    class="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"
+                                    >{{ new Date(historyRecord.date).toDateString() }}</time
+                                >
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                    {{ historyRecord.amount }} {{ saving.currency }}
+                                </h3>
+                            </li>
+                        </ol>
                     </DialogDescription>
                 </template>
             </DialogHeader>

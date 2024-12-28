@@ -16,44 +16,42 @@ export const columns: ColumnDef<Saving>[] = [
         header: () => h('div', 'Currency'),
     },
     {
-        accessorKey: 'last_update',
+        accessorKey: 'lastUpdate',
         header: () => h('div', 'Last Update'),
         cell: ({ row }) => {
-            const history: HistoryRecord[] = row.getValue('history')
-            const date = history[history.length - 1].date
-
-            return h('div', new Date(date).toISOString().split('T')[0])
+            return h('div', new Date(row.getValue('lastUpdate')).toISOString().split('T')[0])
         },
     },
     {
-        accessorKey: 'history',
+        accessorKey: 'percentageChange',
+        header: () => h('div', 'Percentage Change'),
+        cell: ({ row }) => {
+            let formatted = ''
+            const percentageChange: number = row.getValue('percentageChange')
+
+            if (percentageChange === null) {
+                formatted = 'Fresh Record'
+            } else if (percentageChange > 0) {
+                formatted =
+                    '<span class="text-green-600"> &#11016; ' +
+                    percentageChange.toString() +
+                    '%</span>'
+            } else {
+                formatted =
+                    ' <span class="text-red-600"> &#11018; ' +
+                    percentageChange.toString() +
+                    '% </span>'
+            }
+            return h('div', { class: 'font-medium flex justify-between', innerHTML: formatted })
+        },
+    },
+    {
+        accessorKey: 'amount',
         header: () => h('div', 'Amount'),
         cell: ({ row }) => {
-            const history: HistoryRecord[] = row.getValue('history')
             const currency = row.getValue('currency')
-
-            let formatted = history[history.length - 1].amount.toString() + ' ' + currency
-
-            if (history.length > 1) {
-                let comparisonPercentage: string | number = calculatePercentageChange(
-                    history[history.length - 2].amount,
-                    history[history.length - 1].amount,
-                )
-
-                if (comparisonPercentage > 0) {
-                    comparisonPercentage =
-                        '<span class="text-green-600"> &#11016; ' +
-                        comparisonPercentage.toString() +
-                        '%</span>'
-                } else {
-                    comparisonPercentage =
-                        ' <span class="text-red-600"> &#11018; ' +
-                        comparisonPercentage.toString() +
-                        '% </span>'
-                }
-
-                formatted += comparisonPercentage
-            }
+            const amount = row.getValue('amount')
+            let formatted = amount + ' ' + currency
 
             return h('div', { class: 'font-medium flex justify-between', innerHTML: formatted })
         },

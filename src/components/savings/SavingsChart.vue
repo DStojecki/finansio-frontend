@@ -27,7 +27,7 @@ const formatChartData = () => {
             history: new Array(Number(store.timeRange)),
         }
     })
-    console.log('halo', mappedSavings)
+    // console.log('halo', mappedSavings)
 
     // data.value.forEach(period => {
 

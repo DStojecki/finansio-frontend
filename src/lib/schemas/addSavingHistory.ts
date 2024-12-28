@@ -10,9 +10,9 @@ export const addSavingHistory = {
             rules: Yup.number().required(),
         },
         {
-            label: 'Date',
+            label: 'Created At',
             type: 'date',
-            name: 'date',
+            name: 'created_at',
             as: 'input',
             rules: Yup.date().required(),
         },

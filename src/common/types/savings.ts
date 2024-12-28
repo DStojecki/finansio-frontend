@@ -4,7 +4,7 @@ export interface Saving {
     id: string
     currency: string
     name: string
-    history: HistoryRecord[]
+    amount: number
 }
 
 export interface AddSavingInputs {

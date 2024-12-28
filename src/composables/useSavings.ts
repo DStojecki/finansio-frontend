@@ -15,12 +15,6 @@ export const useSavings = (): {
             name: values.name,
             currency: values.currency,
             amount: values.amount,
-            history: [
-                {
-                    amount: values.amount,
-                    date: new Date(),
-                },
-            ],
         }
 
         axios
@@ -44,28 +38,30 @@ export const useSavings = (): {
     }
 
     const getTotalSavings = (currency: string, savings: Saving[]): number => {
-        let total = 0
+        // let total = 0
 
-        const arrayMatchCurrency = savings.filter((el) => el.currency === currency)
-        const arrayDontMatchCurrency = savings.filter((el) => el.currency !== currency)
+        // const arrayMatchCurrency = savings.filter((el) => el.currency === currency)
+        // const arrayDontMatchCurrency = savings.filter((el) => el.currency !== currency)
 
-        arrayMatchCurrency.forEach((el) => {
-            const lastHistoryRecord = el.history[el.history.length - 1]
+        // arrayMatchCurrency.forEach((el) => {
+        //     const lastHistoryRecord = el.history[el.history.length - 1]
 
-            total += lastHistoryRecord.amount
-        })
+        //     total += lastHistoryRecord.amount
+        // })
 
-        arrayDontMatchCurrency.forEach((el) => {
-            const lastHistoryRecord = el.history[el.history.length - 1]
+        // arrayDontMatchCurrency.forEach((el) => {
+        //     const lastHistoryRecord = el.history[el.history.length - 1]
 
-            if (currency === 'USD') {
-                total += lastHistoryRecord.amount / 4.04
-            } else if (currency === 'PLN') {
-                total += lastHistoryRecord.amount * 4.04
-            }
-        })
+        //     if (currency === 'USD') {
+        //         total += lastHistoryRecord.amount / 4.04
+        //     } else if (currency === 'PLN') {
+        //         total += lastHistoryRecord.amount * 4.04
+        //     }
+        // })
 
-        return Number(total.toFixed(2))
+        // return Number(total.toFixed(2))
+
+        return 2000
     }
 
     return {

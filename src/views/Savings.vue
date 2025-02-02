@@ -6,7 +6,6 @@ import {
     SelectContent,
     SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
@@ -33,13 +32,13 @@ import { useSavings } from '@/composables/useSavings'
 import { useDialog } from '@/composables/useDialog'
 import { addSavingSchema } from '@/lib/schemas/addSaving'
 import DynamicForm from '@/components/DynamicForm.vue'
-import DateRangePicker from '../components/DateRangePicker.vue'
 
 const store = useMainStore()
 const { addNewSaving, getAllSavings } = useSavings()
 const { setCookie, getCookie } = useCookies()
 const [isOpen, closeDialog] = useDialog()
 const usd = ref(getCookie('USD'))
+const eur = ref(getCookie('EUR'))
 
 const afterNewSavingAdded = async () => {
     store.savings = await getAllSavings()
@@ -47,11 +46,12 @@ const afterNewSavingAdded = async () => {
 }
 
 onMounted(() => {
-    if (usd.value) return
+    if (usd.value && eur.value) return
+    axios.get('currency').then((response) => {
+        const data = response.data
 
-    axios.get('currency/usd').then((response) => {
-        setCookie('USD', response.data.PLN.value)
-        usd.value = response.data.PLN.value
+        setCookie('USD', 1 / data.USD.value)
+        setCookie('EUR', 1 / data.EUR.value)
     })
 })
 watch(
@@ -97,6 +97,7 @@ watch(
                             <SelectGroup>
                                 <SelectItem value="PLN">PLN</SelectItem>
                                 <SelectItem value="USD">USD</SelectItem>
+                                <SelectItem value="EUR">EUR</SelectItem>
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -165,13 +166,13 @@ watch(
                         </svg>
                     </CardHeader>
                     <CardContent>
-                        <div class="text-2xl font-bold">${{ usd }}</div>
+                        <div class="text-2xl font-bold">${{ Number(usd).toFixed(2) }}</div>
                         <p class="text-xs text-muted-foreground">+180.1% from last month</p>
                     </CardContent>
                 </Card>
                 <Card>
-                    <!-- <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle class="text-sm font-medium"> Sales </CardTitle>
+                    <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle class="text-sm font-medium"> EUR </CardTitle>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
@@ -187,9 +188,9 @@ watch(
                         </svg>
                     </CardHeader>
                     <CardContent>
-                        <div class="text-2xl font-bold">+12,234</div>
+                        <div class="text-2xl font-bold">€{{ Number(eur).toFixed(2) }}</div>
                         <p class="text-xs text-muted-foreground">+19% from last month</p>
-                    </CardContent> -->
+                    </CardContent>
                 </Card>
                 <Card>
                     <!-- <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">

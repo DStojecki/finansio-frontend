@@ -36,6 +36,11 @@ export const editSavingSchema = {
                     value: 'USD',
                     text: 'USD',
                 },
+                {
+                    tag: 'option',
+                    value: 'EUR',
+                    text: 'EUR',
+                },
             ],
         },
     ],

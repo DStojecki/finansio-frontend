@@ -1,5 +1,5 @@
 export const useCookies = () => {
-    function setCookie(name: string, value: string, seconds: number = 86400): void {
+    function setCookie(name: string, value: string | number, seconds: number = 86400): void {
         const date = new Date()
         date.setTime(date.getTime() + seconds * 1000)
         const expires = 'expires=' + date.toUTCString()

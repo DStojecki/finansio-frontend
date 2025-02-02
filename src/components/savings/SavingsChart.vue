@@ -4,34 +4,23 @@ import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useMainStore } from '@/lib/stores/main'
 import { ref, watch, onMounted } from 'vue'
 import { useDateFormatters } from '@/composables/useDateFormatters'
+import axios from '@/lib/axios/index'
 
 const { getPastTimeArray } = useDateFormatters()
 const store = useMainStore()
 
 watch(
     () => store.timeRange,
-    () => {
-        formatChartData()
+    (newPeriod: string) => {
+        getChartData(newPeriod)
     },
 )
 
 onMounted(() => {
-    formatChartData()
+    getChartData(store.timeRange)
 })
-const formatChartData = () => {
-    data.value = getPastTimeArray(Number(store.timeRange))
-
-    const mappedSavings = store.savings.map((saving) => {
-        return {
-            name: saving.name,
-            history: new Array(Number(store.timeRange)),
-        }
-    })
-    // console.log('halo', mappedSavings)
-
-    // data.value.forEach(period => {
-
-    // })
+const getChartData = (period: string) => {
+    axios.get(`savings-operation/period/${period}`)
 }
 let data = ref([])
 </script>

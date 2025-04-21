@@ -13,7 +13,7 @@ export const signUpFormSchema = {
             name: 'password',
             as: 'input',
             type: 'password',
-            rules: Yup.string().min(10).required(),
+            rules: Yup.string().min(8).required(),
         },
     ],
 }

@@ -18,11 +18,7 @@ defineProps<{
 }>()
 
 const deleteSaving = async (id) => {
-    axios
-        .delete(`savings/${id}`)
-        .then((response) => {
-            
-        })
+    axios.delete(`savings/${id}`).then((response) => {})
 }
 </script>
 

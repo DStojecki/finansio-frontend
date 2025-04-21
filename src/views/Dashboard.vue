@@ -10,10 +10,6 @@ import RecentSales from '../components/RecentSales.vue'
 import Search from '../components/Search.vue'
 import TeamSwitcher from '../components/TeamSwitcher.vue'
 import UserNav from '../components/UserNav.vue'
-
-import axios from '@/lib/axios/index'
-
-axios.get('/coffees')
 </script>
 
 <template>

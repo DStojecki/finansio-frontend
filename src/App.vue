@@ -2,6 +2,7 @@
 import { RouterView } from 'vue-router'
 import { useCookies } from '@/composables/useCookies'
 import { useRefreshToken } from '@/composables/useRefreshToken'
+import Toast from '@/components/ui/toast/Toast.vue'
 
 const { getCookie } = useCookies()
 const { keepTokenUpdated } = useRefreshToken()
@@ -18,4 +19,5 @@ checkAuth()
 
 <template>
     <RouterView />
+    <Toast />
 </template>

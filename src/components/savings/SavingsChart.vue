@@ -8,6 +8,9 @@ import axios from "@/lib/axios/index";
 
 const { getPastTimeArray } = useDateFormatters();
 const store = useMainStore();
+const data = ref([]);
+const categories = ref(store.savings.map((saving) => saving.name));
+const chartKey = ref(0);
 
 watch(
     () => store.timeRange,
@@ -16,50 +19,34 @@ watch(
     },
 );
 
+watch(data, () => {
+    chartKey.value += 1;
+});
+
 onMounted(() => {
     getChartData(store.timeRange);
 });
+
 const getChartData = (period: string) => {
-    axios.get(`savings-operation/period/${period}`);
+    const monthNames = getPastTimeArray(parseInt(period));
+    axios.get(`savings-operation/period/${period}`).then((res) => {
+        data.value = res.data.map((saving, index) => {
+            console.log(saving);
+            let object = {
+                name: monthNames[index].name,
+            };
+
+            saving.forEach((element) => {
+                object = {
+                    [element.saving.name]: element.amount,
+                    ...object,
+                };
+            });
+
+            return object;
+        });
+    });
 };
-// let data = ref([])
-const data = [
-    {
-        name: "Jan",
-        total: Math.floor(Math.random() * 2000) + 500,
-        predicted: Math.floor(Math.random() * 2000) + 500,
-    },
-    {
-        name: "Feb",
-        total: Math.floor(Math.random() * 2000) + 500,
-        predicted: Math.floor(Math.random() * 2000) + 500,
-    },
-    {
-        name: "Mar",
-        total: Math.floor(Math.random() * 2000) + 500,
-        predicted: Math.floor(Math.random() * 2000) + 500,
-    },
-    {
-        name: "Apr",
-        total: Math.floor(Math.random() * 2000) + 500,
-        predicted: Math.floor(Math.random() * 2000) + 500,
-    },
-    {
-        name: "May",
-        total: Math.floor(Math.random() * 2000) + 500,
-        predicted: Math.floor(Math.random() * 2000) + 500,
-    },
-    {
-        name: "Jun",
-        total: Math.floor(Math.random() * 2000) + 500,
-        predicted: Math.floor(Math.random() * 2000) + 500,
-    },
-    {
-        name: "Jul",
-        total: Math.floor(Math.random() * 2000) + 500,
-        predicted: Math.floor(Math.random() * 2000) + 500,
-    },
-];
 </script>
 
 <template>
@@ -68,10 +55,19 @@ const data = [
     </CardHeader>
     <CardContent class="pl-2">
         <BarChart
+            :key="chartKey"
+            index="name"
             :data="data"
-            :categories="['total']"
-            :index="'name'"
-            :rounded-corners="4"
+            :colors="['red', 'blue', 'green']"
+            :categories="categories"
+            :y-formatter="
+                (tick, i) => {
+                    return typeof tick === 'number'
+                        ? `$ ${new Intl.NumberFormat('us').format(tick).toString()}`
+                        : '';
+                }
+            "
+            :type="'stacked'"
         />
     </CardContent>
 </template>

@@ -87,6 +87,7 @@ watch(
                                 <SelectItem value="12"
                                     >Last 12 months</SelectItem
                                 >
+                                <SelectItem value="6">Last 6 months</SelectItem>
                                 <SelectItem value="48">Last 4 years</SelectItem>
                             </SelectGroup>
                         </SelectContent>

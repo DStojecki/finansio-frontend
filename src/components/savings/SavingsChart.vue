@@ -10,8 +10,19 @@ const { getPastTimeArray } = useDateFormatters();
 const store = useMainStore();
 const data = ref([]);
 const categories = ref(store.savings.map((saving) => saving.name));
-const chartKey = ref(0);
+const firstLoad = ref(false);
 
+// Watch for changes in savings data
+watch(
+    () => store.savings,
+    (newSavings) => {
+        categories.value = newSavings.map((saving) => saving.name);
+        getChartData(store.timeRange);
+    },
+    { deep: true },
+);
+
+// Watch for time range changes
 watch(
     () => store.timeRange,
     (newPeriod: string) => {
@@ -19,9 +30,14 @@ watch(
     },
 );
 
-watch(data, () => {
-    chartKey.value += 1;
-});
+// Watch for data changes to ensure chart updates
+watch(
+    () => data.value,
+    () => {
+        firstLoad.value = true;
+    },
+    { deep: true },
+);
 
 onMounted(() => {
     getChartData(store.timeRange);
@@ -31,7 +47,6 @@ const getChartData = (period: string) => {
     const monthNames = getPastTimeArray(parseInt(period));
     axios.get(`savings-operation/period/${period}`).then((res) => {
         data.value = res.data.map((saving, index) => {
-            console.log(saving);
             let object = {
                 name: monthNames[index].name,
             };
@@ -51,15 +66,15 @@ const getChartData = (period: string) => {
 
 <template>
     <CardHeader>
-        <CardTitle>Overview</CardTitle>
+        <CardTitle>Timeline</CardTitle>
     </CardHeader>
-    <CardContent class="pl-2">
+    <CardContent v-if="firstLoad" class="pl-2">
         <BarChart
-            :key="chartKey"
             index="name"
             :data="data"
             :colors="['red', 'blue', 'green']"
             :categories="categories"
+            :roundedCorners="5"
             :y-formatter="
                 (tick, i) => {
                     return typeof tick === 'number'

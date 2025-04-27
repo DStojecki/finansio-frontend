@@ -6,6 +6,10 @@ export interface AuthStore {
     user: {
         email: string
         id: string
+        data: {
+            firstName: string
+            lastName: string
+        }
     }
 }
 
@@ -17,6 +21,10 @@ export const useAuthStore = defineStore<'auth', AuthStore>({
         user: {
             email: '',
             id: '',
+            data: {
+                firstName: '',
+                lastName: '',
+            },
         },
     }),
 })

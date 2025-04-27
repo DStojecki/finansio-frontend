@@ -1,19 +1,30 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs/'
-import DateRangePicker from '../components/DateRangePicker.vue'
-import MainNav from '../components/MainNav.vue'
-import Overview from '../components/Overview.vue'
-import RecentSales from '../components/RecentSales.vue'
+import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs/";
+import DateRangePicker from "../components/DateRangePicker.vue";
+import MainNav from "../components/MainNav.vue";
+import Overview from "../components/Overview.vue";
+import RecentSales from "../components/RecentSales.vue";
 
-import Search from '../components/Search.vue'
-import TeamSwitcher from '../components/TeamSwitcher.vue'
-import UserNav from '../components/UserNav.vue'
+import Search from "../components/Search.vue";
+import TeamSwitcher from "../components/TeamSwitcher.vue";
+import UserNav from "../components/UserNav.vue";
 
-import axios from '@/lib/axios/index'
+import axios from "@/lib/axios/index";
 
-axios.get('/coffees')
+axios.get("/coffees");
 </script>
 
 <template>

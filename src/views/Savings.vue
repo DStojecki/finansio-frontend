@@ -18,8 +18,6 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import MainNav from "../components/MainNav.vue";
-import Search from "../components/Search.vue";
-import TeamSwitcher from "../components/TeamSwitcher.vue";
 import UserNav from "../components/UserNav.vue";
 import SavingsTable from "@/components/savings/SavingsTable.vue";
 import SavingsChart from "@/components/savings/SavingsChart.vue";
@@ -66,10 +64,8 @@ watch(
     <div class="flex-col md:flex">
         <div class="border-b">
             <div class="flex h-16 items-center px-4">
-                <TeamSwitcher />
                 <MainNav class="mx-6" />
                 <div class="ml-auto flex items-center space-x-4">
-                    <Search />
                     <UserNav />
                 </div>
             </div>
